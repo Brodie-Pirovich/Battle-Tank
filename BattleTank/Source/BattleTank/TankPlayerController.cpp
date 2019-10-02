@@ -4,6 +4,7 @@
 #include "TankPlayerController.h"
 #include "GameFramework/Actor.h"
 #include "Tank.h"
+#include "Engine/World.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -38,9 +39,14 @@ void ATankPlayerController::AimTowardsCrosshair()
 		return;
 	}
 
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
+
 	FVector HitLocation;
-	if (GetSightRayHitLocation(HitLocation))
+	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
+	if (bGotHitLocation) // Has "side-effect", is going to line trace
 	{
+		//AimingComponent->AimAt(HitLocation);
 		GetControlledTank()->AimAt(HitLocation);
 	}
 }
@@ -57,7 +63,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
 		//LineTrace along that LookDirection, and see what we hit (Up to a max range)
-		GetLookVectorHitLocation(LookDirection, HitLocation);
+		return GetLookVectorHitLocation(LookDirection, HitLocation);
 	}
 
 	return false;
@@ -78,11 +84,12 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 			HItResult,
 			StartLocation,
 			EndLocation,
-			ECollisionChannel::ECC_Visibility)
+			ECollisionChannel::ECC_Camera)
 		)
 	{
 		//Set hit location
 		HitLocation = HItResult.Location;
+		//UE_LOG(LogTemp, Warning, TEXT("Hit at %s"), *HItResult.Location.ToString());
 		return true;
 	}
 	HitLocation = FVector(0);
