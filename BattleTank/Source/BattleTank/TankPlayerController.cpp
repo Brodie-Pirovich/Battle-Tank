@@ -9,16 +9,6 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto ControlledTank = GetControlledTank();
-	if (!ControlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player tank not found"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController possesing %s"), *(ControlledTank->GetName()));
-	}
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -89,7 +79,6 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 	{
 		//Set hit location
 		HitLocation = HItResult.Location;
-		//UE_LOG(LogTemp, Warning, TEXT("Hit at %s"), *HItResult.Location.ToString());
 		return true;
 	}
 	HitLocation = FVector(0);

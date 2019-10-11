@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "TankAimingComponent.h"
+#include "TankMovementComponent.h"
 #include "Tank.generated.h"
 
 //Forward Declarations
 class UTankBarrel; 
 class UTankAimingComponent;
+class UTankMovementComponent;
 class UTankTurret;
 class AProjectile;
 
@@ -25,6 +27,9 @@ public:
 protected:
 
 	UTankAimingComponent* TankAimingComponent = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMovementComponent = nullptr;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
